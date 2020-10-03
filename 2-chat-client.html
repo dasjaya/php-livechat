@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple WebSocket Example</title>
+    <script>
+      var chat = {
+        // CHANGE THE HOST TO YOUR OWN!
+        host : "ws://192.168.0.101:12345/",
+        socket : null, // Will hold the socket object
+
+        // HTML ELEMENTS
+        ewrap : null, // Chat message container
+        etext : null, // Text input
+        esend : null, // Send message button
+
+        init : function () {
+        // chat.init() : initialize
+
+          // Get HTML elements
+          chat.ewrap = document.getElementById("chat-wrap");
+          chat.etext = document.getElementById("chat-text");
+          chat.esend = document.getElementById("chat-send");
+
+          // Create web socket & listen for updates
+          chat.socket = new WebSocket(chat.host);
+          chat.socket.onmessage = function (e) {
+            var update = document.createElement("div");
+            update.innerHTML = e.data;
+            chat.ewrap.appendChild(update);
+          };
+
+          // READY - connected to server
+          chat.socket.onopen = function (e) {
+            chat.esend.disabled = false;
+          };
+
+          // On connection close
+          chat.socket.onclose = function (e) {
+            chat.esend.disabled = true;
+          };
+
+          // On connection error
+          chat.socket.onerror = function (e) {
+            chat.esend.disabled = true;
+            console.log(e);
+          };
+        },
+
+        send : function () {
+        // chat.send() : send message to server
+
+          chat.socket.send(chat.etext.value);
+          chat.etext.value = "";
+          return false;
+        }
+      };
+      window.addEventListener("load", chat.init);
+    </script>
+  </head>
+  <body>
+    <div id="chat-wrap"></div>
+    <form onsubmit="return chat.send()">
+      <input type="text" id="chat-text" required/>
+      <input type="submit" id="chat-send" value="Send" disabled/>
+    </form>
+  </body>
+</html>

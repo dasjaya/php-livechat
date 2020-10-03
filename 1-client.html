@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple WebSocket Example</title>
+    <script>
+      window.addEventListener("load", function(){
+        // CHANGE THE HOST TO YOUR OWN!
+        var host = 'ws://192.168.0.101:12345/';
+
+        // CREATE WEB SOCKET & LISTEN FOR UPDATES
+        var socket = new WebSocket(host);
+        socket.onmessage = function (e) {
+          document.getElementById('messages').innerHTML = e.data;
+        };
+      });
+    </script>
+  </head>
+  <body>
+    <div id="messages"></div>
+  </body>
+</html>
